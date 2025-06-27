@@ -8,6 +8,8 @@ import BankPayment from './pages/BankPayment';
 import CashPayment from './pages/CashPayment';
 import CashRecipt from './pages/CashRecipt';
 import Purchase from './pages/Purchase';
+import AddCustomer from './pages/AddCustomer';
+import RegisterSale from './pages/RegisterSale';
 
 function App() {
   const router = createBrowserRouter([
@@ -71,6 +73,27 @@ function App() {
         </RootLayout>
       ),
     },
+    {
+      path: "/add-customer",
+      element: (
+        <RootLayout>
+          
+            <AddCustomer />
+          
+        </RootLayout>
+      ),
+    },
+    {
+      path: "/register-sale",
+      element: (
+        <RootLayout>
+          
+            <RegisterSale />
+          
+        </RootLayout>
+      ),
+    },
+ 
    
   ]);
   return (

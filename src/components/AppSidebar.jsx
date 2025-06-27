@@ -5,7 +5,6 @@ const AppSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       const sidebar = document.getElementById('sidebar');
@@ -18,7 +17,6 @@ const AppSidebar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Handles navigation and closes sidebar
   const handleNavigate = (path) => {
     setIsOpen(false);
     navigate(path);
@@ -59,6 +57,8 @@ const AppSidebar = () => {
 
         <div className="p-4 space-y-2">
           <button onClick={() => handleNavigate('/')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Dashboard</button>
+          <button onClick={() => handleNavigate('/add-customer')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Add Customer</button>
+          <button onClick={() => handleNavigate('/register-sale')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Register Customer</button>
           <button onClick={() => handleNavigate('/purchase')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Purchase</button>
           <button onClick={() => handleNavigate('/cashrecipt')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Cash Recipt</button>
           <button onClick={() => handleNavigate('/cashpayment')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Cash Payment</button>

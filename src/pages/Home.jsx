@@ -1,140 +1,99 @@
 import React, { useState } from 'react';
 
 const Home = () => {
-  const bankReceipts = [
-    { name: 'Ali', description: 'Invoice #123', price: 2000 },
-    { name: 'Sara', description: 'Payment for goods', price: 1500 },
-    { name: 'John', description: 'Service Fee', price: 3500 },
-  ];
-  const bankPayments = [
-    { name: 'Ahmad', description: 'Loan Repayment', price: 1000 },
-    { name: 'Zara', description: 'Equipment Purchase', price: 1200 },
-  ];
-  const cashReceipts = [
-    { name: 'Nadia', description: 'Cash Sale', price: 5000 },
-    { name: 'Tom', description: 'Deposit', price: 2500 },
-  ];
-  const cashPayments = [
-    { name: 'David', description: 'Office Rent', price: 1800 },
-    { name: 'Emma', description: 'Supplies', price: 2200 },
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+
+  // Example static data — ideally you'd filter this via backend API with fromDate & toDate
+  const stats = [
+    { title: 'Sale Orders', value: 4 },
+    { title: 'Cash Receipts', value: 30100 },
+    { title: 'Bank Receipts', value: 14400 },
+    { title: 'Ograi', value: 0 },
+    { title: 'Purchase', value: 0 },
+    { title: 'Expense', value: 100 },
+    { title: 'Sale', value: 19450 },
+    { title: 'Discount', value: 0 },
+    { title: 'Cash Payment', value: 100 },
+    { title: 'Bank Payment', value: 0 },
+    { title: 'Online Deposit', value: 0 },
+    { title: 'Purchase Orders', value: 0 },
   ];
 
-  const [dateFilters, setDateFilters] = useState({ from: '', to: '' });
-
-  const handleDateChange = (field, value) => {
-    setDateFilters((prev) => ({ ...prev, [field]: value }));
+  const handleFilter = () => {
+    console.log('Filtering from', fromDate, 'to', toDate);
+    // You can send fromDate and toDate to backend here
   };
 
-  const sum = (arr) => arr.reduce((acc, item) => acc + Number(item.price), 0);
-
-  const [modalData, setModalData] = useState(null);
-
-  const stats = [
-    { title: 'Bank Receipts', data: bankReceipts },
-    { title: 'Bank Payments', data: bankPayments },
-    { title: 'Cash Receipts', data: cashReceipts },
-    { title: 'Cash Payments', data: cashPayments },
-  ];
-
-  const openModal = (stat) => setModalData(stat);
-  const closeModal = () => setModalData(null);
-
   return (
-    <div className="bg-gradient-to-br from-blue-100 to-white p-6 min-h-screen">
-      {/* Header and Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-        <h2 className="text-xl font-semibold text-gray-700">Transaction Summary</h2>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <div>
-            <label className="block text-sm text-gray-600">From:</label>
-            <input
-              type="date"
-              value={dateFilters.from}
-              onChange={(e) => handleDateChange('from', e.target.value)}
-              className="border rounded px-2 py-1 text-sm bg-white/30 backdrop-blur-md"
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-600">To:</label>
-            <input
-              type="date"
-              value={dateFilters.to}
-              onChange={(e) => handleDateChange('to', e.target.value)}
-              className="border rounded px-2 py-1 text-sm bg-white/30 backdrop-blur-md"
-            />
-          </div>
-        </div>
-      </div>
+    <div className="p-4 sm:p-6">
+  <div className="max-w-7xl mx-auto space-y-6">
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className="bg-white/30 backdrop-blur-md ring-1 ring-white/40 shadow-lg rounded-lg p-6 text-gray-800"
-          >
-            <h3 className="text-gray-600 text-sm font-medium">{stat.title}</h3>
-            <div className="flex justify-between items-end mt-2">
-              <p className="text-2xl font-bold">${sum(stat.data).toLocaleString()}</p>
-            </div>
-            <div className="mt-4 pt-4 border-t border-gray-200/50">
-              <p className="text-gray-600 text-xs">
-                <button
-                  onClick={() => openModal(stat)}
-                  className="text-blue-500 hover:underline"
-                >
-                  View All
-                </button>
-              </p>
-            </div>
-          </div>
-        ))}
+    {/* Date Range Filters */}
+    <div className="flex flex-col justify-center sm:flex-row sm:items-end gap-4">
+      <div className="w-full sm:w-1/7">
+        <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+        <input
+          type="date"
+          className="border border-gray-300 rounded px-3 py-2 w-full"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+        />
       </div>
-
-      
-      {/* Modal */}
-{modalData && (
-  <div
-    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    onClick={closeModal}
-  >
-    <div
-      className="bg-white/90 ring-1 ring-white/30 text-gray-800 rounded-lg p-6 w-full max-w-lg shadow-2xl"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {modalData.title} - All Entries
-        </h3>
-        <button onClick={closeModal} className="text-red-500 text-sm">
-          Close
+      <div className="w-full sm:w-1/7">
+        <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+        <input
+          type="date"
+          className="border border-gray-300 rounded px-3 py-2 w-full"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+        />
+      </div>
+      <div className="w-full sm:w-auto">
+        <button
+          onClick={handleFilter}
+          className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Search
         </button>
       </div>
-      <p className="text-sm font-semibold mb-2">
-        Total: ${sum(modalData.data).toLocaleString()}
-      </p>
-      <ul className="space-y-2 max-h-60 overflow-y-auto text-sm">
-        <li className="grid grid-cols-3 font-semibold text-gray-700 border-b pb-1">
-          <span>Name</span>
-          <span>Description</span>
-          <span className="text-right">Price</span>
-        </li>
-        {modalData.data.map((item, idx) => (
-          <li
-            key={idx}
-            className="grid grid-cols-3 border-b py-1 text-gray-800 items-center"
+    </div>
+
+    {/* Stats Grid */}
+    <div className="grid sm:w-[700px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {stats.map((stat, index) => (
+        <div
+          key={index}
+          className={`border p-4 rounded-lg ${
+            stat.value === 0
+              ? ''
+              : stat.title.includes('Receipt') || stat.title === 'Sale'
+              ? 'border-green-500'
+              : stat.title.includes('Payment') || stat.title === 'Expense'
+              ? 'border-red-500'
+              : 'border-blue-500'
+          }`}
+        >
+          <h3 className="text-sm font-medium text-center text-gray-600">{stat.title}</h3>
+          <p
+            className={`text-2xl text-center font-semibold mt-2 ${
+              stat.value === 0
+                ? 'text-gray-500'
+                : stat.title.includes('Receipt') || stat.title === 'Sale'
+                ? 'text-green-600'
+                : stat.title.includes('Payment') || stat.title === 'Expense'
+                ? 'text-red-600'
+                : 'text-blue-600'
+            }`}
           >
-            <span>{item.name}</span>
-            <span>{item.description}</span>
-            <span className="text-right font-medium">${item.price.toLocaleString()}</span>
-          </li>
-        ))}
-      </ul>
+            {stat.value.toLocaleString()}
+          </p>
+        </div>
+      ))}
     </div>
   </div>
-)}
+</div>
 
-    </div>
   );
 };
 
