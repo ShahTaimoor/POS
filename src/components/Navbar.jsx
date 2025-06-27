@@ -29,6 +29,12 @@ const Navbar = () => {
       {/* Right: Navigation buttons */}
       <div className=" hidden sm:flex  flex-wrap gap-2">
         <button
+          onClick={() => handleNavigate('/')}
+          className="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+        >
+          Dashboard
+        </button>
+        <button
           onClick={() => handleNavigate('/purchase')}
           className="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
         >
