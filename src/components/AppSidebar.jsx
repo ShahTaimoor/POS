@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const AppSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,50 +23,85 @@ const AppSidebar = () => {
     navigate(path);
   };
 
+  const sidebarVariants = {
+    hidden: { x: '-100%' },
+    visible: { x: 0 },
+    exit: { x: '-100%' },
+  };
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 0.4 },
+    exit: { opacity: 0 },
+  };
+
+  const menuItems = [
+    { label: 'Dashboard', path: '/' },
+    { label: 'Cash Receipt', path: '/cashrecipt' },
+    { label: 'Cash Payment', path: '/cashpayment' },
+    { label: 'Bank Receipt', path: '/bankrecipt' },
+    { label: 'Bank Payment', path: '/bankpayment' },
+  ];
+
   return (
     <>
       {/* Sidebar Toggle Button */}
       <button
-        className="fixed top-3 left-3 z-50 p-2 bg-gray-800 text-white rounded-md lg:hidden"
-        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-2 left-4 z-50 p-2 bg-gray-900 text-white rounded-lg shadow-md lg:hidden"
+        onClick={() => setIsOpen(true)}
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      {/* Blurry Overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"></div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              className="fixed inset-0 bg-black z-40"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={overlayVariants}
+              transition={{ duration: 0.3 }}
+            />
 
-      {/* Glassmorphic Sidebar */}
-      <div
-        id="sidebar"
-        className={`fixed top-0 left-0 z-50 w-64 h-full text-white transition-transform duration-300
-        bg-white/10 backdrop-blur-md shadow-lg ring-1 ring-white/10
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:hidden`}
-      >
-        <div className="p-4 border-b border-white/20 flex justify-between items-center">
-          <h1 className="text-xl font-bold">Menu</h1>
-          <button onClick={() => setIsOpen(false)}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+            {/* Sidebar */}
+            <motion.div
+              id="sidebar"
+              className="fixed top-0 left-0 z-50 w-64 h-full text-white bg-white/10 backdrop-blur-md ring-1 ring-white/10 shadow-xl border-r border-white/20 lg:hidden"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={sidebarVariants}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/20">
+                <h2 className="text-xl font-semibold">Menu</h2>
+                <button onClick={() => setIsOpen(false)} className="text-white hover:text-red-400">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
 
-        <div className="p-4 space-y-2">
-          <button onClick={() => handleNavigate('/')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Dashboard</button>
-          <button onClick={() => handleNavigate('/add-customer')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Add Customer</button>
-          <button onClick={() => handleNavigate('/register-sale')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Register Customer</button>
-          <button onClick={() => handleNavigate('/purchase')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Purchase</button>
-          <button onClick={() => handleNavigate('/cashrecipt')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Cash Recipt</button>
-          <button onClick={() => handleNavigate('/cashpayment')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Cash Payment</button>
-          <button onClick={() => handleNavigate('/bankrecipt')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Bank Recipt</button>
-          <button onClick={() => handleNavigate('/bankpayment')} className="block w-full text-left px-2 py-1 rounded hover:bg-white/20">Bank Payment</button>
-        </div>
-      </div>
+              <nav className="p-4 space-y-2">
+                {menuItems.map(({ label, path }) => (
+                  <button
+                    key={label}
+                    onClick={() => handleNavigate(path)}
+                    className="w-full text-left px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors duration-200"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };
