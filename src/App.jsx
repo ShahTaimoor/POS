@@ -1,6 +1,4 @@
-
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Routes, Route, createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home';
 import RootLayout from './components/layout/RootLayout';
 import BankRecipt from './pages/BankRecipt';
@@ -15,93 +13,39 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <RootLayout>
-          
-            <Home />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><Home /></RootLayout>,
     },
     {
       path: "/bankrecipt",
-      element: (
-        <RootLayout>
-          
-            <BankRecipt />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><BankRecipt /></RootLayout>,
     },
     {
       path: "/bankpayment",
-      element: (
-        <RootLayout>
-          
-            <BankPayment />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><BankPayment /></RootLayout>,
     },
     {
       path: "/cashpayment",
-      element: (
-        <RootLayout>
-          
-            <CashPayment />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><CashPayment /></RootLayout>,
     },
     {
       path: "/cashrecipt",
-      element: (
-        <RootLayout>
-          
-            <CashRecipt />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><CashRecipt /></RootLayout>,
     },
     {
       path: "/purchase",
-      element: (
-        <RootLayout>
-          
-            <Purchase />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><Purchase /></RootLayout>,
     },
     {
       path: "/add-customer",
-      element: (
-        <RootLayout>
-          
-            <AddCustomer />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><AddCustomer /></RootLayout>,
     },
     {
       path: "/register-sale",
-      element: (
-        <RootLayout>
-          
-            <RegisterSale />
-          
-        </RootLayout>
-      ),
+      element: <RootLayout><RegisterSale /></RootLayout>,
     },
- 
-   
   ]);
-  return (
-    
 
-      <RouterProvider router={router} />
-    
-    );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

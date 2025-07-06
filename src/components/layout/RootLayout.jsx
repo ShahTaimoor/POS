@@ -1,17 +1,33 @@
-import AppSidebar from '../AppSidebar';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../Navbar';
+import Notification from '../Notification';
 
 const RootLayout = ({ children }) => {
+  const { notification } = useSelector((state) => state.ui);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Navbar is fixed, so add padding top to compensate */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Navbar */}
       <Navbar />
       
-      {/* Sidebar for mobile */}
-      <AppSidebar />
+      {/* Notification */}
+      <AnimatePresence>
+        {notification && <Notification />}
+      </AnimatePresence>
 
-      {/* Main content */}
-      <main className="mt-16 p-4">{children}</main>
+      {/* Main Content */}
+      <motion.main 
+        className="pt-20 px-4 sm:px-6 lg:px-8 pb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
+      </motion.main>
     </div>
   );
 };
