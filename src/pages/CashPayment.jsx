@@ -2,60 +2,50 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CashPayment = () => {
-  const accountOptions = [
+  const customerOptions = [
     '3 STAR AUTO SWABI',
     '3 STAR AUTOS PABBI',
     '3M AUTOS CHARSADA',
     '4 STAR AUTO DECORATION RAWALPINDI',
     '5D MAT AND DASHBOARD CLOTH',
-    '7 ELEVEN TUCK SHOP CHARSADA'
+    '7 ELEVEN TUCK SHOP CHARSADA',
+    'AUTO GALLERY ABBOTTABAD MEHMOOD MALIK',
+    'ELECTRONICS EMPORIUM',
+    'FURNITURE WORLD',
+    'Ali Autos',
+    'Ahmed Traders',
+    'Mehran Autos'
   ];
 
-  const initialRow = {
-    AccountName: '',
-    Balance: '',
-    Particular: '',
-    Amount: '',
-    showSuggestions: false
-  };
+  const [customerName, setCustomerName] = useState('');
+  const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
 
-  const [data, setData] = useState([
-    { ...initialRow, AccountName: '3 STAR AUTO SWABI', Balance: 0 }
-  ]);
+  const [formData, setFormData] = useState({
+    previousBalance: '5000',
+    description: '',
+    amount: ''
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const columns = ['AccountName', 'Balance', 'Particular', 'Amount'];
+  // Calculate new balance whenever amount changes
+  const newBalance = formData.amount 
+    ? (parseFloat(formData.previousBalance) + parseFloat(formData.amount)).toFixed(2)
+    : '';
 
-  const handleCellChange = (index, column, value) => {
-    const newData = [...data];
-    newData[index][column] = value;
-
-    if (column === 'AccountName') {
-      newData[index].showSuggestions = true;
-    }
-
-    setData(newData);
+  const handleCustomerChange = (e) => {
+    setCustomerName(e.target.value);
+    setShowCustomerSuggestions(true);
   };
 
-  const handleSuggestionClick = (index, suggestion) => {
-    const newData = [...data];
-    newData[index].AccountName = suggestion;
-    newData[index].showSuggestions = false;
-    setData(newData);
+  const handleCustomerSelect = (name) => {
+    setCustomerName(name);
+    setShowCustomerSuggestions(false);
   };
 
-  const handleBlur = (index) => {
-    setTimeout(() => {
-      const newData = [...data];
-      newData[index].showSuggestions = false;
-      setData(newData);
-    }, 200);
-  };
-
-  const handleAddRow = () => {
-    setData([...data, { ...initialRow }]);
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -64,26 +54,32 @@ const CashPayment = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    console.log('Saved data:', data);
+    const paymentData = {
+      customerName,
+      ...formData,
+      newBalance
+    };
+    
+    console.log('Saved Cash Payment Data:', paymentData);
     setIsSubmitting(false);
     setShowSuccess(true);
     
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
-  const handleReset = () => {
-    setData([{ ...initialRow, AccountName: '3 STAR AUTO SWABI', Balance: 0 }]);
-  };
+  const filteredCustomers = customerOptions.filter(customer =>
+    customer.toLowerCase().includes(customerName.toLowerCase()) && customerName !== ''
+  );
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="p-6 max-w-6xl mx-auto bg-white rounded-xl shadow-lg"
+      className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg"
     >
       <motion.h1 
-        className="text-2xl font-bold mb-6 text-blue-600"
+        className="text-3xl font-bold mb-6 text-blue-600"
         initial={{ x: -20 }}
         animate={{ x: 0 }}
         transition={{ delay: 0.1 }}
@@ -91,125 +87,123 @@ const CashPayment = () => {
         Cash Payment
       </motion.h1>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-        <div className="overflow-y-auto h-[300px]">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                {columns.map((col) => (
-                  <th
-                    key={col}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+      {/* Customer Name Input */}
+      <div className="mb-6">
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+          <div className="relative">
+            <input
+              type="text"
+              value={customerName}
+              onChange={handleCustomerChange}
+              onFocus={() => setShowCustomerSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowCustomerSuggestions(false), 200)}
+              placeholder="Search customer..."
+              className={`w-full px-4 py-3 rounded-lg border-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                customerName ? 'border-blue-300' : 'border-gray-300'
+              }`}
+            />
+            <motion.div 
+              className="absolute right-3 top-3 text-gray-400"
+              animate={{ rotate: showCustomerSuggestions ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
+          </div>
+          
+          <AnimatePresence>
+            {showCustomerSuggestions && filteredCustomers.length > 0 && (
+              <motion.ul
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
+              >
+                {filteredCustomers.map((customer, index) => (
+                  <motion.li
+                    key={index}
+                    onClick={() => handleCustomerSelect(customer)}
+                    whileHover={{ backgroundColor: '#f0f7ff' }}
+                    className="px-4 py-2 cursor-pointer border-b border-gray-100 last:border-b-0 text-sm"
                   >
-                    {col}
-                  </th>
+                    {customer}
+                  </motion.li>
                 ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              <AnimatePresence>
-                {data.map((row, index) => {
-                  const filteredSuggestions = accountOptions.filter(option =>
-                    option.toLowerCase().includes(row.AccountName.toLowerCase()) &&
-                    row.AccountName !== ''
-                  );
-
-                  return (
-                    <motion.tr 
-                      key={index} 
-                      className="hover:bg-gray-50"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {columns.map((col) => (
-                        <td key={col} className="px-6 py-4 whitespace-nowrap relative">
-                          {col === 'AccountName' ? (
-                            <div className="relative">
-                              <motion.input
-                                type="text"
-                                placeholder="Enter account name"
-                                className={`w-full border-2 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                                  row.AccountName ? 'border-blue-300' : 'border-gray-300'
-                                }`}
-                                value={row.AccountName}
-                                onChange={(e) =>
-                                  handleCellChange(index, col, e.target.value)
-                                }
-                                onFocus={() => {
-                                  const newData = [...data];
-                                  newData[index].showSuggestions = true;
-                                  setData(newData);
-                                }}
-                                onBlur={() => handleBlur(index)}
-                                whileHover={{ scale: 1.01 }}
-                              />
-                              <AnimatePresence>
-                                {row.showSuggestions && filteredSuggestions.length > 0 && (
-                                  <motion.ul
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="absolute z-10 bg-white border border-gray-200 w-full max-h-40 overflow-y-auto mt-1 rounded-lg shadow-lg"
-                                  >
-                                    {filteredSuggestions.map((suggestion, sIndex) => (
-                                      <motion.li
-                                        key={sIndex}
-                                        className="px-4 py-2 text-sm hover:bg-blue-100 cursor-pointer border-b border-gray-100 last:border-b-0"
-                                        onClick={() =>
-                                          handleSuggestionClick(index, suggestion)
-                                        }
-                                        whileHover={{ backgroundColor: '#f0f7ff' }}
-                                      >
-                                        {suggestion}
-                                      </motion.li>
-                                    ))}
-                                  </motion.ul>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                          ) : (
-                            <motion.input
-                              type={col === 'Balance' || col === 'Amount' ? 'number' : 'text'}
-                              className={`w-full border-2 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                                row[col] ? 'border-blue-300' : 'border-gray-300'
-                              }`}
-                              value={row[col]}
-                              onChange={(e) => handleCellChange(index, col, e.target.value)}
-                              whileHover={{ scale: 1.01 }}
-                              placeholder={col === 'Amount' ? '0.00' : ''}
-                            />
-                          )}
-                        </td>
-                      ))}
-                    </motion.tr>
-                  );
-                })}
-              </AnimatePresence>
-            </tbody>
-          </table>
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mt-6">
-        <motion.button
-          onClick={handleAddRow}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-          className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium shadow-md hover:bg-green-700 transition-all"
-        >
-          Add New Row
-        </motion.button>
-        
+      {/* Transaction Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Previous Balance</label>
+          <motion.div whileHover={{ scale: 1.01 }}>
+            <input
+              type="number"
+              value={formData.previousBalance}
+              onChange={(e) => handleInputChange('previousBalance', e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </motion.div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Payment Amount</label>
+          <motion.div whileHover={{ scale: 1.01 }}>
+            <input
+              type="number"
+              value={formData.amount}
+              onChange={(e) => handleInputChange('amount', e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              placeholder="0.00"
+            />
+          </motion.div>
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <motion.div whileHover={{ scale: 1.01 }}>
+            <textarea
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all h-24"
+              placeholder="Payment details..."
+            />
+          </motion.div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">New Balance</label>
+          <motion.div whileHover={{ scale: 1.01 }}>
+            <input
+              type="number"
+              value={newBalance}
+              disabled
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-700"
+            />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="mt-8 flex items-center space-x-4">
         <motion.button
           onClick={handleSave}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !customerName || !formData.amount}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           className={`px-6 py-3 rounded-lg text-white font-medium shadow-md transition-all flex items-center justify-center ${
-            isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            isSubmitting 
+              ? 'bg-blue-400 cursor-not-allowed' 
+              : (!customerName || !formData.amount) 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-blue-600 hover:bg-blue-700'
           }`}
         >
           {isSubmitting ? (
@@ -223,15 +217,6 @@ const CashPayment = () => {
           ) : (
             'Save Payment'
           )}
-        </motion.button>
-        
-        <motion.button
-          onClick={handleReset}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-          className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium shadow-md hover:bg-red-700 transition-all"
-        >
-          Reset
         </motion.button>
 
         <AnimatePresence>
@@ -254,7 +239,7 @@ const CashPayment = () => {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="font-medium">Payment Saved Successfully!</span>
+              <span className="font-medium">Cash Payment Saved Successfully!</span>
             </motion.div>
           )}
         </AnimatePresence>

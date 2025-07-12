@@ -5,8 +5,18 @@ import { setNotification } from '../store/slices/uiSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+  
+  // Get current date in YYYY-MM-DD format
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const [fromDate, setFromDate] = useState(getCurrentDate());
+  const [toDate, setToDate] = useState(getCurrentDate());
   const [isFiltering, setIsFiltering] = useState(false);
 
   // Example static data with better organization
@@ -93,149 +103,139 @@ const Home = () => {
     return colors[color] || colors.gray;
   };
 
-  
-
   return (
     <div className="space-y-8">
-     
-
       {/* Filter Section Mobile */}
       <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
-  className="sm:hidden flex justify-center"
->
-  <motion.div
-    className="flex items-center space-x-2 bg-white border border-gray-300 rounded-full px-2 py-1 shadow-sm"
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-  >
-    <input
-      type="date"
-      className="w-[100px] text-xs border-none focus:ring-0 focus:outline-none"
-      value={fromDate}
-      onChange={(e) => setFromDate(e.target.value)}
-    />
-    <span className="text-gray-500 text-xs">→</span>
-    <input
-      type="date"
-      className="w-[100px] text-xs border-none focus:ring-0 focus:outline-none"
-      value={toDate}
-      onChange={(e) => setToDate(e.target.value)}
-    />
-    <button
-      onClick={handleFilter}
-      disabled={isFiltering}
-      className={`flex items-center justify-center rounded-full p-1 transition ${
-        isFiltering
-          ? 'bg-blue-300 cursor-not-allowed'
-          : 'bg-blue-600 hover:bg-blue-700 text-white'
-      }`}
-    >
-      {isFiltering ? (
-        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      ) : (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      )}
-    </button>
-  </motion.div>
-</motion.div>
-
-
-
-
-     
-      {/* Filter Section Desktop */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
-  className="hidden sm:flex justify-center"
->
-  <motion.div
-    className="flex items-center space-x-2 bg-white border border-gray-300 rounded-xl px-3 py-2 shadow-sm"
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-  >
-    <input
-      type="date"
-      className=" text-xs border-2 border-gray-200 rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-      value={fromDate}
-      onChange={(e) => setFromDate(e.target.value)}
-    />
-    <span className="text-gray-500 text-sm">→</span>
-    <input
-      type="date"
-      className=" text-xs border-2 border-gray-200 rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-      value={toDate}
-      onChange={(e) => setToDate(e.target.value)}
-    />
-
-    <motion.button
-      onClick={handleFilter}
-      disabled={isFiltering}
-      className={`p-2 rounded-lg text-white text-sm font-medium shadow-md transition-all flex items-center justify-center ${
-        isFiltering
-          ? 'bg-blue-400 cursor-not-allowed'
-          : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'
-      }`}
-      whileHover={!isFiltering ? { scale: 1.02 } : {}}
-      whileTap={!isFiltering ? { scale: 0.98 } : {}}
-    >
-      {isFiltering ? (
-        <svg
-          className="animate-spin h-4 w-4 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="sm:hidden flex justify-center"
+      >
+        <motion.div
+          className="flex items-center space-x-2 bg-white border border-gray-300 rounded-full px-2 py-1 shadow-sm"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-      ) : (
-        <svg
-          className="w-3 h-3"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          <input
+            type="date"
+            className="w-[100px] text-xs border-none focus:ring-0 focus:outline-none"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
           />
-        </svg>
-      )}
-    </motion.button>
-  </motion.div>
-</motion.div>
+          <span className="text-gray-500 text-xs">→</span>
+          <input
+            type="date"
+            className="w-[100px] text-xs border-none focus:ring-0 focus:outline-none"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+          <button
+            onClick={handleFilter}
+            disabled={isFiltering}
+            className={`flex items-center justify-center rounded-full p-1 transition ${
+              isFiltering
+                ? 'bg-blue-300 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
+          >
+            {isFiltering ? (
+              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            )}
+          </button>
+        </motion.div>
+      </motion.div>
 
+      {/* Filter Section Desktop */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="hidden sm:flex justify-center"
+      >
+        <motion.div
+          className="flex items-center space-x-2 bg-white border border-gray-300 rounded-xl px-3 py-2 shadow-sm"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <input
+            type="date"
+            className="text-xs border-2 border-gray-200 rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+          <span className="text-gray-500 text-sm">→</span>
+          <input
+            type="date"
+            className="text-xs border-2 border-gray-200 rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
 
+          <motion.button
+            onClick={handleFilter}
+            disabled={isFiltering}
+            className={`p-2 rounded-lg text-white text-sm font-medium shadow-md transition-all flex items-center justify-center ${
+              isFiltering
+                ? 'bg-blue-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'
+            }`}
+            whileHover={!isFiltering ? { scale: 1.02 } : {}}
+            whileTap={!isFiltering ? { scale: 0.98 } : {}}
+          >
+            {isFiltering ? (
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            ) : (
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            )}
+          </motion.button>
+        </motion.div>
+      </motion.div>
 
       {/* Stats Grid */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-3  xl:grid-cols-7 gap-2"
+        className="grid grid-cols-6 xl:grid-cols-7 gap-2"
       >
         {stats.map((stat, index) => (
           <motion.div
@@ -244,24 +244,19 @@ const Home = () => {
             whileHover="hover"
             className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 cursor-pointer group hover:shadow-lg transition-shadow"
           >
-            
-              <div className={`p-3 w-10 h-10 mx-auto mb-2 flex items-center justify-center rounded-lg ${getColorClasses(stat.color)}`}>
-                <span className="text-md  sm:text-xl">{stat.icon}</span>
-              </div>
-              
-            
+            <div className={`p-3 w-10 h-10 mx-auto mb-2 flex items-center justify-center rounded-lg ${getColorClasses(stat.color)}`}>
+              <span className="text-md sm:text-xl">{stat.icon}</span>
+            </div>
             
             <div className="">
               <h3 className="text-[13px] sm:text-lg text-center font-medium text-gray-600">{stat.title}</h3>
-              <p className="text-lg sm:text-lg text-center  font-bold text-gray-900">
+              <p className="text-lg sm:text-lg text-center font-bold text-gray-900">
                 {typeof stat.value === 'number' && stat.value >= 1000 
-                  ? `$${stat.value.toLocaleString()}`
+                  ? `${stat.value.toLocaleString()}`
                   : stat.value.toLocaleString()
                 }
               </p>
             </div>
-            
-           
           </motion.div>
         ))}
       </motion.div>
