@@ -235,7 +235,7 @@ const Home = () => {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-6 xl:grid-cols-7 gap-2"
+        className="grid grid-cols-3 lg:grid-cols-6 xl:grid-cols-7 gap-2"
       >
         {stats.map((stat, index) => (
           <motion.div
