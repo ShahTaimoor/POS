@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { setNotification } from '../store/slices/uiSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const dispatch = useDispatch();
-  
+  const navigate = useNavigate();
+  const location = useLocation();
   // Get current date in YYYY-MM-DD format
   const getCurrentDate = () => {
     const today = new Date();
@@ -35,6 +37,22 @@ const Home = () => {
     { title: 'Purchase Orders', value: 0, icon: '📋', color: 'purple' },
   ];
 
+  const navItems = [
+    { path: '/', label: 'Dashboard' },
+    { path: '/cashrecipt', label: 'Cash Receipt'},
+    { path: '/cashpayment', label: 'Cash Payment' },
+    { path: '/bankrecipt', label: 'Bank Receipt' },
+    { path: '/bankpayment', label: 'Bank Payment' },
+    
+  ];
+
+  
+  const handleNavigate = (path) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
+
+   const isActive = (path) => location.pathname === path;
   const handleFilter = async () => {
     if (!fromDate || !toDate) {
       dispatch(setNotification({
@@ -105,6 +123,29 @@ const Home = () => {
 
   return (
     <div className="space-y-8">
+
+        {/* Center - Desktop Navigation */}
+        <div className="lg:hidden flex flex-wrap items-center text-sm space-x-1">
+            {navItems.map((item) => (
+              <motion.button
+                key={item.path}
+                onClick={() => handleNavigate(item.path)}
+                className={`py-1 px-2 rounded-lg text-[10px] font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  isActive(item.path)
+                    ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-200'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+              </motion.button>
+            ))}
+          </div>
       {/* Filter Section Mobile */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
